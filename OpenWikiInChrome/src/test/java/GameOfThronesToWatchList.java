@@ -1,35 +1,28 @@
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
+import org.openqa.selenium.By;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
-public class GameOfThronesToWatchList{
+public class GameOfThronesToWatchList extends LibraryForWiki{
 
+    private static String URL_PAR = "http://wikipedia.org";
+    private static final String USER_NAME = "VitalyBlazhko";
+    private static final String USER_PASSWORD = "7504241";
     private static final String SEARCH_PARAMETER = "game of thrones";
 
-    @BeforeMethod
-    public void setUP(){
-        LibraryForWiki.setUpPrepare();
-    }
-
     @Test
-    public void addGameOfThronesToWishListTest(){
-
+    public void addGameOfThronesToWatchListTest(){
         //Log in to wiki
-        LogInToWiki.logInToWikiInChromeTest();
-
+        logInToWiki(URL_PAR,
+                By.cssSelector("#js-link-box-en"),
+                By.cssSelector("li [accesskey=o]"),
+                By.cssSelector("#wpName1"), USER_NAME,
+                By.cssSelector("#wpPassword1"), USER_PASSWORD,
+                By.cssSelector("div #wpLoginAttempt"));
         //Enter what you are looking for
-        LibraryForWiki.fillInSearchBar(SEARCH_PARAMETER);
-
+        fillInFieldUniversal(By.cssSelector("input#searchInput"), SEARCH_PARAMETER);
         //Click the Search button
-        LibraryForWiki.clickSearchButtonWhenLoggedIn();
-
+        clickSearchButton(By.cssSelector("input#searchButton"));
         //Add desired page to watch list
-        LibraryForWiki.addToWatchList();
-
-    }
-
-    @AfterMethod
-    public void tearDown() throws InterruptedException {
-        LibraryForWiki.quitBrowser();
+        addToWatchList(By.cssSelector("[accesskey=w]"));
     }
 }

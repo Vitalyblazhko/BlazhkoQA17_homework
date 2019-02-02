@@ -1,41 +1,40 @@
-import org.testng.annotations.AfterMethod;
+import org.openqa.selenium.By;
+import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 
-public class LogInToWiki {
+public class LogInToWiki extends LibraryForWiki {
 
+    private static String URL_PAR = "http://wikipedia.org";
     private static final String USER_NAME = "VitalyBlazhko";
     private static final String USER_PASSWORD = "7504241";
 
     @BeforeMethod
-    public void setUP(){
-        LibraryForWiki.setUpPrepare();
+    public void ensurePrecondition(){
+       if(isUserLoggedIn(URL_PAR, By.cssSelector("#js-link-box-en"), By.cssSelector("[title='Log out']"))){
+           logOutFromWiki(By.cssSelector("[title='Log out']"));
+       }
     }
 
     @Test
-    public static void logInToWikiInChromeTest(){
+    public void logInToWikiInChromeTest(){
         //Open wikipedia.org
-        LibraryForWiki.openSite(LibraryForWiki.URL_PAR);
-
+        openSite(URL_PAR);
         //Switch to English
-        LibraryForWiki.switchToEnglish();
-
+        switchToNecessaryLanguage(By.cssSelector("#js-link-box-en"));
         //Click the LogIn button
-        LibraryForWiki.clickLogIn();
-
+        clickLogIn(By.cssSelector("li [accesskey=o]"));
         //Enter User Name
-        LibraryForWiki.enterUsername(USER_NAME);
-
+        fillInFieldUniversal(By.cssSelector("#wpName1"), USER_NAME);
         //Enter Password
-        LibraryForWiki.enterPassword(USER_PASSWORD);
-
+        fillInFieldUniversal(By.cssSelector("#wpPassword1"), USER_PASSWORD);
         //Click the Log in button
-        LibraryForWiki.clickTheLogInButton();
+        clickLogIn(By.cssSelector("div #wpLoginAttempt"));
+
+        Assert.assertTrue(isUserLoggedIn(URL_PAR,
+                By.cssSelector("#js-link-box-en"),
+                By.cssSelector("[title='Log out']")));
     }
 
-    @AfterMethod
-    public void tearDown() throws InterruptedException {
-        LibraryForWiki.quitBrowser();
-    }
 }
